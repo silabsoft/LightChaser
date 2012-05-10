@@ -1,7 +1,7 @@
 LightChaser.GameManager	=	function() {
     const TICK = 60.0;
     var gameWidth = 700;
-    var gameHeight = 500
+    var gameHeight = 550
     var imgTemp;
     var context;
     var gameGrid;
@@ -42,7 +42,7 @@ LightChaser.GameManager	=	function() {
             setTimeout(LightChaser.GameManager.loop, (1/TICK) * 1000);
             imgTemp = new Image();
             imgTemp.src = "resources/silabsoft.png";
-            gameGrid = new LightChaser.GameGrid(context,5,0,0,500,500);
+            gameGrid = new LightChaser.GameGrid(5,0,0,500,500);
             canvasX = $('#gameCanvas').offset().left;
             canvasY = $('#gameCanvas').offset().top;
         },
@@ -68,7 +68,9 @@ LightChaser.GameManager	=	function() {
                     }
                     break;
                 case "NEXT_LEVEL":
+                    LightChaser.GameState.levelReset(gameGrid.getLevelId());
                     gameGrid.generateLevel();
+                    
                     LightChaser.GameState.currentState = "INGAME";
                     break;
                     
@@ -94,8 +96,15 @@ LightChaser.GameManager	=	function() {
                     break;
                 case "SCORING":
                 case "INGAME":
+                    context.fillStyle = "Red";  
+                    context.fillText("Level ID: "+gameGrid.getLevelId(), 10, 510);   
+                    context.fillText("Move Count: "+LightChaser.GameState.moveCount,10, 520); 
+                    context.fillStyle = "Blue";  
+                    context.fillText("Last Level ID: "+LightChaser.GameState.lastLevelId, 10, 530);   
+                    context.fillText("Last Level Move Count: "+LightChaser.GameState.lastLevelMoveCount, 10, 540);                    
                 case "TITLE":
                 case "NEXT_LEVEL":
+                    
                     gameGrid.draw(context);
                     break;
             }	

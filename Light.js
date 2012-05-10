@@ -9,7 +9,7 @@ LightChaser.Light = function(gridX,gridY,size) {
         return state;
     },
     
-    //if true will also change adjacent states
+    //if true will also change the quad light states
     this.changeState = function(isInital){
         state = !state;
         if(isInital){

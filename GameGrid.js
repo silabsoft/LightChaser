@@ -110,8 +110,9 @@ LightChaser.GameGrid = function(lightSquared,startX,startY,width,height) {
         return levelId;
     }
     this.generateLevel = function(){
-        levelId = "";
+        //found out why some level ids had been huge had the idreset before the loop
         do{
+            levelId = ""; 
             console.log("generating level");
             for (var i = 0; i < lightSquared; i++){
                 levelId += levelKey[i];

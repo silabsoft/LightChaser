@@ -8,6 +8,8 @@ LightChaser.GameManager	=	function() {
     var canvasX;
     var canvasY;
     var temp = 0;
+    var menu;
+    var resourceURL = null;
     function preGameAnim(ctx){
         ctx.drawImage(imgTemp, 150, 233, 210, 44);	
     }
@@ -18,6 +20,8 @@ LightChaser.GameManager	=	function() {
         var clicks = [];
         for(var i = 0; i < click.length; i++){
             var c = click.shift();
+            c.x -= canvasX;
+            c.y -= canvasY;
             if(c.x > area.x && c.x < area.ex && c.y > area.y && c.y < area.ey){
                 clicks.push(c);
             }
@@ -41,10 +45,28 @@ LightChaser.GameManager	=	function() {
             },false);
             setTimeout(LightChaser.GameManager.loop, (1/TICK) * 1000);
             imgTemp = new Image();
-            imgTemp.src = "resources/silabsoft.png";
+            
+            imgTemp.src = resourceURL == null ? "resources/silabsoft.png" : resourceURL+"silabsoft.png";
+            console.log(imgTemp.src);
             gameGrid = new LightChaser.GameGrid(5,0,0,500,500);
             canvasX = $('#gameCanvas').offset().left;
             canvasY = $('#gameCanvas').offset().top;
+        //    menu = new LightChaser.Menu(502,0,198,500);
+         //   menu.init();
+            //now for some shitty menu creating
+      /*      var img = new Image();
+            img.src = "./lightchaser/resources/resources/new_game_0.png";
+            var imga = [];
+            imga.push(img);
+            var mi = new LightChaser.MenuItem(0,200,50,imga,function(){},true);
+      //      menu.pushMenuItem(mi);
+            imga = [];
+            img = new Image();
+            img.src = "./lightchaser/resources/restart_level_0.png";
+            imga.push(img);           
+            mi = new LightChaser.MenuItem(1,200,50,imga,function(){},false);
+          //  menu.pushMenuItem(mi);
+          */
         },
         loop: function() { 
             LightChaser.GameManager.update();
@@ -84,6 +106,7 @@ LightChaser.GameManager	=	function() {
                     gameGrid.update(mouse,processClick(gameGrid.getArea(),click));
                     break;
             }
+         //   menu.update();
         },
         draw: function(){ 
             context.clearRect(0, 0, gameWidth, gameHeight);
@@ -106,9 +129,10 @@ LightChaser.GameManager	=	function() {
                 case "NEXT_LEVEL":
                     
                     gameGrid.draw(context);
+          //          menu.draw(context);
                     break;
             }	
-            
+
             
         }
     };

@@ -1,5 +1,6 @@
 LightChaser.GameGrid = function(lightSquared,startX,startY,width,height) {
     var lights = [];
+    var lightsCopy = []; // for resetting a board
     var width;
     var height;
     var startX;
@@ -32,8 +33,11 @@ LightChaser.GameGrid = function(lightSquared,startX,startY,width,height) {
         for (var i = 0; i < lightSquared; i++) //generate the lights
         {
             lights[i]    =   [];
-            for (var j = 0; j < lightSquared; j++)
+            lightsCopy[i] = [];
+            for (var j = 0; j < lightSquared; j++){
                 lights[i][j]	=	new LightChaser.Light(i,j, size);
+                lightsCopy[i][j] = new LightChaser.Light(i,j, size);
+            }
         }
 		
         for (var i = 0; i < lightSquared; i++) //set the Neighbor
@@ -53,10 +57,6 @@ LightChaser.GameGrid = function(lightSquared,startX,startY,width,height) {
                 lights[i][j].setNeighbor(neighbor);
             }
         }	
-        //hard coded test level fuck yeah!
-        lights[4][4].changeState(false);	
-        lights[4][3].changeState(false);	
-        lights[3][4].changeState(false);
 
         
     };	
@@ -119,11 +119,23 @@ LightChaser.GameGrid = function(lightSquared,startX,startY,width,height) {
                 for (var j = 0; j < lightSquared; j++){
                     if(getRandomInt(0,10) > 6){
                         lights[i][j].changeState(false);
+                        lightsCopy[i][j].changeState(false);
                         levelId += levelKey[5+j];
                     }
                 }
             }
+            
         }while(!solve());
+    }
+    this.resetLevel = function(){
+        for (var i = 0; i < lightSquared; i++){
+            for (var j = 0; j < lightSquared; j++){
+                if(lights[i][j].getState() != lightsCopy[i][j].getState()){
+                    lights[i][j].changeState(false);
+                }
+            }
+        }
+        
     }
     
     function getRandomInt(min, max)
@@ -137,6 +149,10 @@ LightChaser.GameGrid = function(lightSquared,startX,startY,width,height) {
     this.startX = startX;
     this.startY = startY;
     this.buildGrid();
+
+
+    //I want to move this stuff into its own javascript file and give proper credits to the source
+
     var mat;    
     var cols;   
     var m;      

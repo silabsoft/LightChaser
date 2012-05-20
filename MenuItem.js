@@ -1,29 +1,26 @@
-LightChaser.MenuItem = function(id,width,height,images, funct,enabled) {
-    var id;
-    var images;
-    var click;
+LightChaser.MenuItem = function(i,w,h,img, funct,en) {
     var enabled;
     var width;
-    var height;
-    var currentImage = 0;
+    var height; 
+    var mouseOver;
+    var x;
+    var y;
     
     this.getId = function(){
-        return id;
+        return i;
     }
-    this.onMouseOver = function(){
-        
+    this.isMouseOver = function(){
+        return mouseOver
     }
-    this.onClick = function(){
-        
-    }
-    this.setEnabled = function(enabled){
-        enabled = enabled;
+    this.onClick = funct;
+    this.setEnabled = function(e){
+        enabled = e;
     }
     this.isEnabled = function(){
         return enabled;
     }
-    this.getCurrentImage = function(){
-       return images[currentImage];
+    this.getImage = function(){
+        return img;
     }
     this.getWidth = function(){
         return width;
@@ -31,11 +28,34 @@ LightChaser.MenuItem = function(id,width,height,images, funct,enabled) {
     this.getHeight = function(){
         return height;
     }
-    this.id = id;
-    this.images = images;
-    this.click = funct;
-    this.enabled = enabled;
-    this.width = width;
-    this.height = height;
-    
+    this.setX = function(i){
+        x = i;
+    }
+    this.setY = function(i){
+        y = i;
+    }
+    this.getX = function(){
+        return x;
+    }
+    this.getY = function(){
+        return y;
+    }
+    this.getArea = function(){
+        return {
+            'x':x,
+            'y':y,
+            'ex':(x+width),
+            'ey':(y+height)
+        }
+    }
+    this.setMouseOver = function(b){
+        mouseOver = b;
+    }
+    this.setWidth = function(i){
+        width = i;
+    }
+    enabled = en;
+    width = w;
+    height = h;
+    mouseOver = false;
 }

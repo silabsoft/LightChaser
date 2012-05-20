@@ -19,11 +19,15 @@ LightChaser.GameManager	=	function() {
         }
         var clicks = [];
         for(var i = 0; i < click.length; i++){
-            var c = click.shift();
+            var c = click.shift(); 
             c.x -= canvasX;
             c.y -= canvasY;
             if(c.x > area.x && c.x < area.ex && c.y > area.y && c.y < area.ey){
                 clicks.push(c);
+                
+            }
+            else{
+                click.push(c);
             }
         }
         if(clicks.length > 0){
@@ -46,27 +50,31 @@ LightChaser.GameManager	=	function() {
             setTimeout(LightChaser.GameManager.loop, (1/TICK) * 1000);
             imgTemp = new Image();
             
-            imgTemp.src = resourceURL == null ? "resources/silabsoft.png" : resourceURL+"silabsoft.png";
+            imgTemp.src = getResourceURI("silabsoft.png");
             console.log(imgTemp.src);
             gameGrid = new LightChaser.GameGrid(5,0,0,500,500);
             canvasX = $('#gameCanvas').offset().left;
             canvasY = $('#gameCanvas').offset().top;
-        //    menu = new LightChaser.Menu(502,0,198,500);
-         //   menu.init();
+            menu = new LightChaser.Menu();
+            menu.init(502,0,198,500);
             //now for some shitty menu creating
-      /*      var img = new Image();
-            img.src = "./lightchaser/resources/resources/new_game_0.png";
-            var imga = [];
-            imga.push(img);
-            var mi = new LightChaser.MenuItem(0,200,50,imga,function(){},true);
-      //      menu.pushMenuItem(mi);
-            imga = [];
-            img = new Image();
-            img.src = "./lightchaser/resources/restart_level_0.png";
-            imga.push(img);           
-            mi = new LightChaser.MenuItem(1,200,50,imga,function(){},false);
-          //  menu.pushMenuItem(mi);
-          */
+            var img = new Image();
+            img.src = getResourceURI("new_game_0.png");
+            var mi = new LightChaser.MenuItem("New Game",200,50,img,function(){
+                LightChaser.GameState.levelReset(gameGrid.getLevelId());
+                gameGrid.generateLevel();
+                LightChaser.GameState.lastLevelMoveCount = 0;
+                LightChaser.GameState.currentState = "INGAME";
+
+            },true);
+            menu.pushMenuItem(mi);
+            var imgb = new Image();
+            imgb.src = getResourceURI("restart_level_0.png");
+            mi = new LightChaser.MenuItem("Restart Level",200,50,imgb, function(){
+                gameGrid.resetLevel();
+                LightChaser.GameState.moveCount = 0;
+            },false);
+            menu.pushMenuItem(mi);
         },
         loop: function() { 
             LightChaser.GameManager.update();
@@ -98,15 +106,26 @@ LightChaser.GameManager	=	function() {
                     
                 case "SCORING":
                     LightChaser.GameState.currentState = "NEXT_LEVEL";
+                    rmi.setEnabled(false);
                     break;
                 case "TITLE":
-                    LightChaser.GameState.currentState = "INGAME";
+                    menu.update(mouse,processClick(menu.getArea(),click));
+                   
                     break;
                 case "INGAME":
                     gameGrid.update(mouse,processClick(gameGrid.getArea(),click));
+                   var rmi = menu.getMenuItemById("Restart Level");
+                   if(!rmi.isEnabled() && LightChaser.GameState.moveCount > 0){
+              
+                      rmi.setEnabled(true);
+                   }
+                   if(rmi.isEnabled() && LightChaser.GameState.moveCount == 0){
+                       rmi.setEnabled(false);
+                   }
+                     menu.update(mouse,processClick(menu.getArea(),click));
                     break;
             }
-         //   menu.update();
+        //   menu.update();
         },
         draw: function(){ 
             context.clearRect(0, 0, gameWidth, gameHeight);
@@ -129,13 +148,18 @@ LightChaser.GameManager	=	function() {
                 case "NEXT_LEVEL":
                     
                     gameGrid.draw(context);
-          //          menu.draw(context);
+                    menu.draw(context);
                     break;
             }	
 
             
         }
     };
+    
+    //This function allows me to easily upload my localcopy to the webserver
+    function getResourceURI(resourceName){
+        return resourceURL == null ? "resources/"+resourceName : resourceURL+resourceName;
+    }
 }();
 	
 	
